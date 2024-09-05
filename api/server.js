@@ -11,6 +11,7 @@ const path = require('path');
 app.use(express.static(path.join(__dirname, '../public')));
 
 // define a route to handle the API request
+console.log('API Key:', API_KEY);  // Add this for debugging
 app.get('/api/news', async (req, res) => {
   const url = `https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=${API_KEY}`;
   
