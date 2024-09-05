@@ -1,0 +1,27 @@
+# Ignorera node_modules
+node_modules/
+
+# Ignorera miljövariabler
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Ignorera loggfiler
+*.log
+logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignorera VS Code-inställningar
+.vscode/
+
+# Ignorera macOS och Windows-specifika filer
+.DS_Store
+Thumbs.db
+
+# Ignorera byggfiler
+dist/
+build/
