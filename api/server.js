@@ -1,43 +1,42 @@
-require('dotenv').config(); // load environment variable from .env
-const express = require('express'); // express is a framework to build webb apps in Node.js
-const axios = require('axios');  // axios library for easier API calls
-const app = express(); // create a express-app to handle HTTP requests
+require('dotenv').config(); // Load environment variables from the .env file
+const express = require('express'); // Express framework for building web applications
+const axios = require('axios'); // Axios library for making API requests
+const app = express(); // Create an Express app to handle HTTP requests
 
-const API_KEY = process.env.API_KEY; // get API key from the .env file
+const API_KEY = process.env.API_KEY; // Retrieve API key from .env file
+const path = require('path'); // Node module for handling file and directory paths
 
-const path = require('path'); // Node module for file-catalouge searches
-
-// serve static files (HTML, CSS, JS) from the public folder
+// Serve static files (HTML, CSS, JS) from the public folder
 app.use(express.static(path.join(__dirname, '../public')));
 
-// define a route to handle the API request
+// Define a route to handle API requests
 app.get('/api/news', async (req, res) => {
-  const url = [
-    `https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=${API_KEY}`
+  const apiUrls = [
+    `https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=${API_KEY}`,
     `https://newsapi.org/v2/everything?q=apple&from=2024-09-05&to=2024-09-05&sortBy=popularity&apiKey=${API_KEY}`
   ];
-  
-  
+
   try {
-    // loop through the API:s and sends all requests pararell
+    // Send all API requests in parallel with Promise.all
     const apiRequests = apiUrls.map(url => axios.get(url));
-    const response = await Promise.all(apiRequests);
+    const responses = await Promise.all(apiRequests);
 
-    // extract every article from each API answer
-    const articles = response.map(response => response.data.articles);
+    // Extract articles from each API response
+    const articles = responses.map(response => response.data.articles);
 
-    // return the results
+    // Send back the results
     res.json({
       techCrunchArticles: articles[0],
       appleArticles: articles[1]
     });
 
   } catch (error) {
+    // Handle error and send back a 500 status with the error message
     res.status(500).json({ error: 'Error fetching data from the API' });
   }
 });
 
-// start the server
+// Start the server
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
