@@ -1,12 +1,13 @@
 require('dotenv').config(); // Load environment variables from the .env file
 const express = require('express'); // Express framework for building web applications
 const axios = require('axios'); // Axios library for making API requests
+const path = require('path'); // Node module for handling file and directory paths
+
 const app = express(); // Create an Express app to handle HTTP requests
 
-// Retrieve API keys from .env file
-const newsApiKey = process.env.NEWSAPI_KEY;
-const currentsApiKey = process.env.CURRENTSAPI_KEY;
-const path = require('path'); // Node module for handling file and directory paths
+// Retrieve API key from .env file
+const newsApiKey = process.env.API_KEY; 
+console.log('Using API Key:', newsApiKey);  // Log API key for debugging
 
 // Serve static files (HTML, CSS, JS) from the public folder
 app.use(express.static(path.join(__dirname, '../public')));
@@ -14,9 +15,9 @@ app.use(express.static(path.join(__dirname, '../public')));
 // Define a route to handle API requests
 app.get('/api/news', async (req, res) => {
   const apiUrls = [
-    `https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=${newsApiKey}`,
-    `https://newsapi.org/v2/everything?q=apple&from=2024-09-05&to=2024-09-05&sortBy=popularity&apiKey=${newsApiKey}`,
-    `https://api.currentsapi.services/v1/latest-news?language=en&apiKey=${currentsApiKey}` // Currents API request
+    `https://newsapi.org/v2/top-headlines?sources=bbc-news&apiKey=${newsApiKey}`,
+    `https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=${newsApiKey}`,     
+    `https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=${newsApiKey}`
   ];
 
   try {
@@ -25,13 +26,13 @@ app.get('/api/news', async (req, res) => {
     const responses = await Promise.all(apiRequests);
 
     // Extract articles from each API response
-    const articles = responses.map(response => response.data.articles || response.data.news); // 'news' for Currents API
+    const articles = responses.map(response => response.data.articles || response.data.news);
 
     // Send back the results
     res.json({
-      techCrunchArticles: articles[0],
-      appleArticles: articles[1],
-      currentsArticles: articles[2] // Add the latest news from Currents API
+      bbcArticles: articles[0],
+      techCrunchArticles: articles[1],
+      businessArticles: articles[2]
     });
 
   } catch (error) {
