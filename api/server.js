@@ -21,6 +21,9 @@ app.get('/api/news', async (req, res) => {
     const apiRequests = apiUrls.map(url => axios.get(url));
     const responses = await Promise.all(apiRequests);
 
+    // Log WSJ API response to debug
+    console.log('WSJ API Response:', responses[2].data); // Log WSJ response
+
     // Extract articles from each API response
     const articles = responses.map(response => response.data.articles);
 
@@ -32,6 +35,7 @@ app.get('/api/news', async (req, res) => {
 
   } catch (error) {
     // Handle error and send back a 500 status with the error message
+    console.error('Error fetching API data:', error.message || error);
     res.status(500).json({ error: 'Error fetching data from the API' });
   }
 });

@@ -5,14 +5,13 @@ document.addEventListener('DOMContentLoaded', function () {
   fetch('/api/news')
     .then(response => response.json())
     .then(data => {
-      // Filter out invalid articles
-      const validTechCrunchArticles = data.techCrunchArticles.filter(article => {
+      const validTechCrunchArticles = (data.techCrunchArticles || []).filter(article => {
         return article.urlToImage && article.title && article.description;
       });
-
-      const validAppleArticles = data.appleArticles.filter(article => {
+      
+      const validAppleArticles = (data.appleArticles || []).filter(article => {
         return article.urlToImage && article.title && article.description;
-      });
+      });     
 
       // Display valid TechCrunch articles
       let techCrunchHTML = '';
@@ -41,6 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
         `;
       });
       appleContainer.innerHTML = appleHTML;
+
     })
     .catch(error => {
       console.error('Error fetching news:', error);
